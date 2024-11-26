@@ -1,17 +1,24 @@
-import MovieInfo from "@/app/components/movie-info";
-import MovieVideos from "@/app/components/movie-videos";
+import MovieInfo, { getMovie } from "@/app/components/movie/movie-info";
+import MovieVideos from "@/app/components/movie/movie-videos";
 import { Suspense } from "react";
 
-export const metadata = {
-  title: 'Movie Detail',
+interface IParams {
+  params: { id: string }
 }
 
-export default async function MovieDetail({ params }: { params: Promise<{ id: number }> }): Promise<JSX.Element> {
+export async function generateMetadata({ params }: IParams) {
+  const { id } = await params;
+  const movie = await getMovie(id);
+  return {
+    title: movie.title,
+  }
+}
+
+export default async function MovieDetail({ params }: IParams) {
   const { id } = await params;
 
   return (
     <div>
-      <h3>Movie Detail Page</h3>
       <Suspense fallback="영화 정보 로딩중...">
         <MovieInfo id={id} />
       </Suspense>
